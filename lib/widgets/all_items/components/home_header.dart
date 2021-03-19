@@ -7,6 +7,9 @@ import 'package:shopify/widgets/utils/helpers.dart';
 import 'icon_btn_with_counter.dart';
 
 class HomeHeader extends StatelessWidget {
+  int _noNotifications;
+  HomeHeader({required int noNotifications})
+      : this._noNotifications = noNotifications;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -21,13 +24,11 @@ class HomeHeader extends StatelessWidget {
             //press: () => Navigator.pushNamed(context, CartScreen.routeName),
             press: () {},
           ),
-          GetBuilder<AllItemsController>(builder: (controller) {
-            return IconBtnWithCounter(
-              svgSrc: "assets/icons/Bell.svg",
-              numOfitem: controller.viewState.value!.noNotifications,
-              press: () {},
-            );
-          }),
+          IconBtnWithCounter(
+            svgSrc: "assets/icons/Bell.svg",
+            numOfitem: _noNotifications,
+            press: () {},
+          ),
         ],
       ),
     );

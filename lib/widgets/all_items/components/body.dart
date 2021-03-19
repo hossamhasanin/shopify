@@ -20,13 +20,12 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
-    _controller = Get.find();
+    _controller = Get.find<AllItemsController>();
     _controller.getCats();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
@@ -36,34 +35,37 @@ class _BodyState extends State<Body> {
       child: SingleChildScrollView(
         child: Obx(
           () {
+            var viewstate = _controller.viewState.value;
             return Column(
               children: [
                 SizedBox(height: getProportionateScreenHeight(20)),
-                HomeHeader(),
+                HomeHeader(
+                  noNotifications: viewstate!.noNotifications,
+                ),
                 SizedBox(height: getProportionateScreenWidth(10)),
                 DiscountBanner(),
-                _controller.viewState.value!.loadingCats
+                viewstate.loadingCats
                     ? Container(
                         child: Center(child: CircularProgressIndicator()))
                     : Categories(
-                        categories: _controller.viewState.value!.cats,
+                        categories: viewstate.cats,
                       ),
                 SizedBox(
                   height: 20.0,
                 ),
-                _controller.viewState.value!.loadingCats
+                viewstate.loadingCats
                     ? Container(
                         child: Center(child: CircularProgressIndicator()))
                     : SpecialOffers(),
                 SizedBox(height: getProportionateScreenWidth(30)),
-                _controller.viewState.value!.error != null
-                    ? Center(child: Text(_controller.viewState.value!.error))
+                viewstate.error != null
+                    ? Center(child: Text(viewstate.error))
                     : SizedBox.shrink(),
-                _controller.viewState.value!.loading
+                viewstate.loading
                     ? Container(
                         child: Center(child: CircularProgressIndicator()))
                     : PopularProducts(
-                        products: _controller.viewState.value!.popularItems,
+                        products: viewstate.popularItems,
                       ),
                 SizedBox(height: getProportionateScreenWidth(30)),
               ],

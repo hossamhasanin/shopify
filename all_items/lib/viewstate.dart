@@ -5,7 +5,6 @@ class AllItemsViewState extends Equatable {
   final bool loading;
   final bool loadingCats;
   final String error;
-  final List<Product> items;
   final List<Product> popularItems;
   final List<Category> cats;
   final String? catId;
@@ -19,7 +18,6 @@ class AllItemsViewState extends Equatable {
       required this.popularItems,
       required this.catsError,
       required this.catId,
-      required this.items,
       required this.loading,
       required this.loadMore,
       required this.loadingCats,
@@ -27,15 +25,8 @@ class AllItemsViewState extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object> get props => [
-        loading,
-        popularItems,
-        loadingCats,
-        error,
-        items,
-        loadMore,
-        noNotifications
-      ];
+  List<Object> get props =>
+      [loading, popularItems, loadingCats, error, loadMore, noNotifications];
 
   AllItemsViewState copy(
       {bool? loading,
@@ -45,13 +36,11 @@ class AllItemsViewState extends Equatable {
       String? catsError,
       List<Category>? cats,
       String? error,
-      List<Product>? items,
       bool? loadMore,
       int? noNotifications}) {
     return AllItemsViewState(
         loading: loading ?? this.loading,
         error: error ?? this.error,
-        items: items ?? this.items,
         popularItems: popularItems ?? this.popularItems,
         catId: catId ?? this.catId,
         cats: cats ?? this.cats,

@@ -1,6 +1,5 @@
 import 'package:all_items/all_items.dart';
 import 'package:authentication_x/authentication_x.dart';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +9,7 @@ import 'package:shopify/dependencies.dart';
 import 'package:shopify/theme.dart';
 import 'package:shopify/widgets/all_items/AllItemsScreen.dart';
 import 'package:shopify/widgets/auth/AuthUi.dart';
+import 'package:shopify/widgets/cat_items/cat_items_screen.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 
 void main() {
@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
         title: 'Shopify',
         getPages: [
-          GetPage(name: AllItemsScreen.routeName, page: () => AllItemsScreen())
+          GetPage(name: AllItemsScreen.routeName, page: () => AllItemsScreen()),
+          GetPage(name: CatItemsScreen.routeName, page: () => CatItemsScreen())
         ],
         theme: theme(),
         home: HomeWidget());

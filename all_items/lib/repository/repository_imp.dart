@@ -14,38 +14,28 @@ class AllItemsRepoImp implements AllItemsRepo {
         this._cashkDatasource = cashDatasource;
 
   @override
-  Stream<List<Category>> getCats() {
+  Future<List<Category>> getCats() async {
     try {
-      return _networkDatasource.getCats().asStream().asyncMap((cats) async {
-        await _cashkDatasource.cashCats(cats);
-        return Future.value(cats);
-      });
+      var cats = await _networkDatasource.getCats();
+      await _cashkDatasource.cashCats(cats);
+      return cats;
     } catch (e) {
       print(e);
-      return _cashkDatasource.getCats().asStream();
+      return _cashkDatasource.getCats();
     }
   }
 
   @override
-  Stream<List<Product>> getItemes(
-      String lastId, String catId, bool getPopular) {
+  Future<List<Product>> getPopItemes(String catId) async {
+    var popItems;
     try {
-      var stream = getPopular
-          ? _networkDatasource.getPopularItems()
-          : _networkDatasource.getItems(lastId, catId);
-      return stream.asStream().asyncMap((items) async {
-        getPopular
-            ? await _cashkDatasource.cashPopularItems(items)
-            : await _cashkDatasource.cashItems(items);
-        return Future.value(items);
-      });
+      popItems = await _networkDatasource.getPopularItems();
+      await _cashkDatasource.cashPopularItems(popItems);
     } catch (e) {
       print(e);
-      var stream = getPopular
-          ? _cashkDatasource.getPopularItems()
-          : _cashkDatasource.getItems(lastId, catId);
-      return stream.asStream();
+      popItems = _cashkDatasource.getPopularItems();
     }
+    return popItems;
   }
 
   @override

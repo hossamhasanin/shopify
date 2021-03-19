@@ -49,6 +49,8 @@ dependencies:
     path: all_items  
   models:
     path: models  
+  cat_items:
+    path: cat_items  
 
 dev_dependencies:
   flutter_test:

@@ -2,7 +2,7 @@ import 'package:authentication_x/authentication_x.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shopify/constants.dart';
-import 'package:shopify/models/User.dart' as U;
+import 'package:models/User.dart' as U;
 
 class FirebaseAuthDatasource extends AuthDataSource<U.User> {
   FirebaseAuth _auth = FirebaseAuth.instance;

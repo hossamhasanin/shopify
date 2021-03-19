@@ -6,41 +6,34 @@ class AllItemsUseCase {
   AllItemsRepo _repo;
   AllItemsUseCase({required AllItemsRepo repo}) : this._repo = repo;
 
-  Stream<AllItemsViewState> getItems(
-      String lastId, bool getPopular, AllItemsViewState viewState) {
+  Future<AllItemsViewState> getItems(AllItemsViewState viewState) async {
     try {
-      return _repo
-          .getItemes(lastId, viewState.catId!, getPopular)
-          .asyncMap((items) {
-        return getPopular
-            ? viewState.copy(loading: false, popularItems: items)
-            : viewState.copy(loading: false, loadMore: false, items: items);
-      });
+      var items = await _repo.getPopItemes(viewState.catId!);
+      return viewState.copy(loading: false, popularItems: items);
     } catch (e) {
       print(e);
-      return Stream.value(viewState.copy(
+      return Future.value(viewState.copy(
           error: "Error while loading the data",
           loadMore: false,
           loading: false));
     }
   }
 
-  Stream<AllItemsViewState> getCats(AllItemsViewState viewState) {
+  Future<AllItemsViewState> getCats(AllItemsViewState viewState) async {
     try {
-      return _repo.getCats().asyncMap((cats) {
-        return viewState.copy(
-            loadingCats: false, cats: cats, catId: cats.first.id);
-      });
+      var cats = await _repo.getCats();
+      return viewState.copy(
+          loadingCats: false, cats: cats, catId: cats.first.id);
     } catch (e) {
       print(e);
-      return Stream.value(viewState.copy(
+      return Future.value(viewState.copy(
           loadingCats: false, catsError: "Error happend in loading cats"));
     }
   }
 
   Stream<AllItemsViewState> getNoNotifications(AllItemsViewState viewState) {
     return _repo.noNotifications()!.asyncMap((event) {
-      debugPrint("noti count" + event.toString());
+      debugPrint("noti count " + event.toString());
       return viewState.copy(noNotifications: event);
     });
   }

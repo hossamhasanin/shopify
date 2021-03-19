@@ -90,7 +90,8 @@ class FirebaseDataSource implements AllItemsDataSource {
     var notificationDoc = _firestore
         .collection(USERS_COLLECTION)
         .doc(_auth.currentUser!.uid)
-        .collection(NOTIFICATIONS_COLLECTION);
+        .collection(NOTIFICATIONS_COLLECTION)
+        .where("isReed", isEqualTo: false);
 
     yield* notificationDoc.snapshots().asyncMap((data) => data.docs.length);
   }

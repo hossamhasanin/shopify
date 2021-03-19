@@ -1,7 +1,7 @@
 import 'package:models/models.dart';
 
 abstract class AllItemsRepo {
-  Stream<List<Product>> getItemes(String lastId, String catId, bool getPopular);
-  Stream<List<Category>> getCats();
+  Future<List<Product>> getPopItemes(String catId);
+  Future<List<Category>> getCats();
   Stream<int>? noNotifications();
 }

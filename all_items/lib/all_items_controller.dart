@@ -19,15 +19,13 @@ class AllItemsController extends GetxController {
           cats: List.empty(),
           popularItems: List.empty(),
           loadingCats: false,
-          items: List.empty(),
           catsError: "",
           noNotifications: 0)
       .obs;
   late AllItemsUseCase _useCase;
   StreamController<AllItemsEvent> _eventHandler = StreamController();
-  StreamSubscription? _getItemsListener;
-  StreamSubscription? _getCatsListener;
-  StreamSubscription? l;
+
+  StreamSubscription? _noNotificationsListener;
 
   AllItemsController(
       {required AllItemsDataSource networkDatasource,
@@ -42,24 +40,18 @@ class AllItemsController extends GetxController {
         _getItems(event);
       } else if (event is GetCats) {
         _getCats(event);
-      } else if (event is LoadMore) {
-        _loadMore(event);
       } else if (event is NoNotificattions) {
         _getNoNotifications();
       }
     });
   }
 
-  getItems() {
-    _eventHandler.sink.add(GetItems(getPopular: false));
-  }
-
   getPopularItems() {
-    _eventHandler.sink.add(GetItems(getPopular: true));
+    _eventHandler.sink.add(GetItems());
   }
 
   getCats() {
-    viewState.value = viewState.value.copy(loading: true, loadingCats: true);
+    viewState.value = viewState.value?.copy(loading: true, loadingCats: true);
     _eventHandler.sink.add(GetCats());
   }
 
@@ -67,71 +59,38 @@ class AllItemsController extends GetxController {
     _eventHandler.add(NoNotificattions());
   }
 
-  loadMore(String lastId) {
-    _eventHandler.sink.add(LoadMore(lastId: lastId));
+  _getItems(GetItems event) async {
+    viewState.value = await _useCase.getItems(viewState.value!);
   }
 
-  _getItems(GetItems event) {
-    _loadItemsUnit("", event.getPopular);
-  }
-
-  _getCats(GetCats event) {
-    if (_getCatsListener != null) {
-      _getCatsListener!.cancel();
-      _getCatsListener = null;
-    }
-    _getCatsListener = _useCase.getCats(viewState.value).listen((state) {
-      viewState.value = state;
-      getPopularItems();
-    })
-      ..onDone(() {
-        _getCatsListener!.cancel();
-      });
-  }
-
-  _loadMore(LoadMore event) {
-    viewState.value = viewState.value.copy(loadMore: true);
-
-    _loadItemsUnit(event.lastId, false);
-  }
-
-  _loadItemsUnit(String lastId, bool getPopular) {
-    if (_getItemsListener != null) {
-      _getItemsListener!.cancel();
-      _getItemsListener = null;
-    }
-    _getItemsListener =
-        _useCase.getItems(lastId, getPopular, viewState.value).listen((state) {
-      viewState.value = state;
-    })
-          ..onDone(() {
-            _getItemsListener!.cancel();
-          });
+  _getCats(GetCats event) async {
+    viewState.value = await _useCase.getCats(viewState.value!);
+    getPopularItems();
   }
 
   _getNoNotifications() {
-    l = _useCase.getNoNotifications(viewState.value).listen((event) {
-      viewState.value = event;
+    _noNotificationsListener =
+        _useCase.getNoNotifications(viewState.value!).listen((state) {
+      debugPrint("state is " + state.noNotifications.toString());
+      viewState.value = state;
+      debugPrint("set state is " + viewState.value!.noNotifications.toString());
     })
-      ..onError((e) {
-        debugPrint(e);
-      })
-      ..onDone(() {
-        l!.cancel();
-      });
+          ..onError((e) {
+            debugPrint(e);
+          })
+          ..onDone(() {
+            _noNotificationsListener!.cancel();
+            debugPrint("done noti");
+          });
   }
 
   @override
   void onClose() {
     _eventHandler.close();
     viewState.close();
-    if (_getItemsListener != null) {
-      _getItemsListener!.cancel();
-      _getItemsListener = null;
-    }
-    if (_getCatsListener != null) {
-      _getCatsListener!.cancel();
-      _getCatsListener = null;
+    if (_noNotificationsListener != null) {
+      _noNotificationsListener!.cancel();
+      _noNotificationsListener = null;
     }
     super.onClose();
   }

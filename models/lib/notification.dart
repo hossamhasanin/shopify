@@ -4,13 +4,21 @@ class Notification extends Equatable {
   final String id;
   final String title;
   final String desc;
+  final bool isReed;
 
   const Notification(
-      {required this.id, required this.title, required this.desc});
+      {required this.id,
+      required this.title,
+      required this.desc,
+      required this.isReed});
 
   @override
   List<Object?> get props => [id, title, desc];
   static Notification fromDocument(Map<String, dynamic> map) {
-    return Notification(id: map["id"], title: map["title"], desc: map["desc"]);
+    return Notification(
+        id: map["id"],
+        title: map["title"],
+        desc: map["desc"],
+        isReed: map["isReed"]);
   }
 }
