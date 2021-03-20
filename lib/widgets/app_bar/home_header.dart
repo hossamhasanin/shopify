@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:shopify/widgets/all_items/components/search_field.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 
-import 'icon_btn_with_counter.dart';
+import '../all_items/components/icon_btn_with_counter.dart';
 
 class HomeHeader extends StatelessWidget {
   int _noNotifications;

@@ -5,7 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:models/models.dart';
 import 'package:shopify/constants.dart';
 
-class FirebaseDataSource implements AllItemsDataSource, CatItemsDatasource {
+import 'package:app_bar/app_bar.dart';
+
+class FirebaseDataSource
+    implements AllItemsDataSource, CatItemsDatasource, AppBarDatasource {
   FirebaseFirestore _firestore;
   FirebaseAuth _auth;
   FirebaseDataSource(

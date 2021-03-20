@@ -37,9 +37,4 @@ class AllItemsRepoImp implements AllItemsRepo {
     }
     return popItems;
   }
-
-  @override
-  Stream<int>? noNotifications() {
-    return _networkDatasource.noNotifications();
-  }
 }

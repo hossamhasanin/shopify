@@ -30,11 +30,4 @@ class AllItemsUseCase {
           loadingCats: false, catsError: "Error happend in loading cats"));
     }
   }
-
-  Stream<AllItemsViewState> getNoNotifications(AllItemsViewState viewState) {
-    return _repo.noNotifications()!.asyncMap((event) {
-      debugPrint("noti count " + event.toString());
-      return viewState.copy(noNotifications: event);
-    });
-  }
 }

@@ -50,7 +50,9 @@ dependencies:
   models:
     path: models  
   cat_items:
-    path: cat_items  
+    path: cat_items
+  app_bar:
+    path: app_bar  
 
 dev_dependencies:
   flutter_test:

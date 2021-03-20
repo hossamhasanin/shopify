@@ -2,11 +2,12 @@ import 'package:all_items/all_items.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/instance_manager.dart';
+import 'package:shopify/widgets/app_bar/app_bar.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 
 import 'categories.dart';
 import 'discount_banner.dart';
-import 'home_header.dart';
+import '../../app_bar/home_header.dart';
 import 'popular_product.dart';
 import 'special_offers.dart';
 
@@ -34,45 +35,47 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        child: GetX<AllItemsController>(
-          init: _controller,
-          builder: (controller) {
-            var viewstate = controller.viewState.value;
-            return Column(
-              children: [
-                SizedBox(height: getProportionateScreenHeight(20)),
-                HomeHeader(
-                  noNotifications: viewstate!.noNotifications,
-                ),
-                SizedBox(height: getProportionateScreenWidth(10)),
-                DiscountBanner(),
-                viewstate.loadingCats
-                    ? Container(
-                        child: Center(child: CircularProgressIndicator()))
-                    : Categories(
-                        categories: viewstate.cats,
-                      ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                viewstate.loadingCats
-                    ? Container(
-                        child: Center(child: CircularProgressIndicator()))
-                    : SpecialOffers(),
-                SizedBox(height: getProportionateScreenWidth(30)),
-                viewstate.error != null
-                    ? Center(child: Text(viewstate.error))
-                    : SizedBox.shrink(),
-                viewstate.loading
-                    ? Container(
-                        child: Center(child: CircularProgressIndicator()))
-                    : PopularProducts(
-                        products: viewstate.popularItems,
-                      ),
-                SizedBox(height: getProportionateScreenWidth(30)),
-              ],
-            );
-          },
+        child: Column(
+          children: [
+            SizedBox(height: getProportionateScreenHeight(20)),
+            HeaderAppBar(),
+            GetX<AllItemsController>(
+              init: _controller,
+              builder: (controller) {
+                var viewstate = controller.viewState.value;
+                return Column(
+                  children: [
+                    SizedBox(height: getProportionateScreenWidth(10)),
+                    DiscountBanner(),
+                    viewstate!.loadingCats
+                        ? Container(
+                            child: Center(child: CircularProgressIndicator()))
+                        : Categories(
+                            categories: viewstate.cats,
+                          ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    viewstate.loadingCats
+                        ? Container(
+                            child: Center(child: CircularProgressIndicator()))
+                        : SpecialOffers(),
+                    SizedBox(height: getProportionateScreenWidth(30)),
+                    viewstate.error != null
+                        ? Center(child: Text(viewstate.error))
+                        : SizedBox.shrink(),
+                    viewstate.loading
+                        ? Container(
+                            child: Center(child: CircularProgressIndicator()))
+                        : PopularProducts(
+                            products: viewstate.popularItems,
+                          ),
+                    SizedBox(height: getProportionateScreenWidth(30)),
+                  ],
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
