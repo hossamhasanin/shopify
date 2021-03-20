@@ -16,19 +16,19 @@ import 'datasources/auth/FirebaseAuthDatasource.dart';
 inject() {
   Get.put(FormValidator());
   Get.put<AuthDataSource>(FirebaseAuthDatasource());
-  Get.put(AuthController(authDataSource: Get.find()));
+  Get.create<AuthController>(() => AuthController(authDataSource: Get.find()));
   Get.put(
       FirebaseDataSource(
           firestore: FirebaseFirestore.instance, auth: FirebaseAuth.instance),
       tag: "networkDatasource");
   Get.put(CashDatabase(), tag: "cashDatasource");
 
-  Get.put(AllItemsController(
+  Get.create<AllItemsController>(() => AllItemsController(
       networkDatasource:
           Get.find(tag: "networkDatasource") as AllItemsDataSource,
       cashDatasource: Get.find(tag: "cashDatasource") as AllItemsDataSource));
 
-  Get.put(CatItemsController(
+  Get.create<CatItemsController>(() => CatItemsController(
       cashDatasource: Get.find(tag: "cashDatasource") as CatItemsDatasource,
       networkDatasource:
           Get.find(tag: "networkDatasource") as CatItemsDatasource));

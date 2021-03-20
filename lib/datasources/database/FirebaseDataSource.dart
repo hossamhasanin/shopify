@@ -1,10 +1,11 @@
 import 'package:all_items/all_items.dart';
+import 'package:cat_items/datasource.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:models/models.dart';
 import 'package:shopify/constants.dart';
 
-class FirebaseDataSource implements AllItemsDataSource {
+class FirebaseDataSource implements AllItemsDataSource, CatItemsDatasource {
   FirebaseFirestore _firestore;
   FirebaseAuth _auth;
   FirebaseDataSource(
@@ -20,29 +21,6 @@ class FirebaseDataSource implements AllItemsDataSource {
           .map((snapshot) => Category.fromDocument(snapshot.data()!))
           .toList();
       return cats;
-    } else {
-      return List.empty();
-    }
-  }
-
-  @override
-  Future<List<Product>> getItems(String lastId, String catId) async {
-    var itemsQuery = lastId.isEmpty
-        ? await _firestore
-            .collection(PRODUCTS_COLLECTION)
-            .orderBy("id")
-            .limit(ITEMS_LIMIT)
-            .get()
-        : await _firestore
-            .collection(PRODUCTS_COLLECTION)
-            .orderBy("id")
-            .limit(ITEMS_LIMIT)
-            .startAfter([lastId]).get();
-    if (itemsQuery.size > 0) {
-      List<Product> items = itemsQuery.docs
-          .map((snapshot) => Product.fromDocument(snapshot.data()!))
-          .toList();
-      return items;
     } else {
       return List.empty();
     }
@@ -71,11 +49,6 @@ class FirebaseDataSource implements AllItemsDataSource {
   }
 
   @override
-  Future<bool>? cashItems(List cats) {
-    return null;
-  }
-
-  @override
   Future<void>? cashPopularItems(List<Product> cats) {
     return null;
   }
@@ -94,5 +67,36 @@ class FirebaseDataSource implements AllItemsDataSource {
         .where("isReed", isEqualTo: false);
 
     yield* notificationDoc.snapshots().asyncMap((data) => data.docs.length);
+  }
+
+  @override
+  Future<List<Product>> getItems(String catId, String lastId) async {
+    var itemsQuery = lastId.isEmpty
+        ? await _firestore
+            .collection(PRODUCTS_COLLECTION)
+            .where("catId", isEqualTo: catId)
+            .orderBy("id")
+            .limit(ITEMS_LIMIT)
+            .get()
+        : await _firestore
+            .collection(PRODUCTS_COLLECTION)
+            .where("catId", isEqualTo: catId)
+            .orderBy("id")
+            .limit(ITEMS_LIMIT)
+            .startAfter([lastId]).get();
+    if (itemsQuery.size > 0) {
+      List<Product> items = itemsQuery.docs
+          .map((snapshot) => Product.fromDocument(snapshot.data()!))
+          .toList();
+      return items;
+    } else {
+      return List.empty();
+    }
+  }
+
+  @override
+  Future cashItems(List<Product> items) {
+    // TODO: implement cashItems
+    throw UnimplementedError();
   }
 }

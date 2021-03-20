@@ -7,6 +7,5 @@ abstract class AllItemsDataSource {
 
   void initCashDatabase();
   Future<void>? cashCats(List<Category> cats);
-  Future<void>? cashItems(List<Product> items);
   Future<void>? cashPopularItems(List<Product> items);
 }

@@ -1,9 +1,10 @@
 import 'package:all_items/all_items.dart';
+import 'package:cat_items/datasource.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:models/models.dart';
 
-class CashDatabase implements AllItemsDataSource {
+class CashDatabase implements AllItemsDataSource, CatItemsDatasource {
   Box<Category>? catsBox;
   Box<Product>? productsBox;
   Box<Product>? popularProductsBox;
@@ -29,11 +30,6 @@ class CashDatabase implements AllItemsDataSource {
   @override
   Future<List<Category>> getCats() {
     return Future.value(catsBox!.values.toList());
-  }
-
-  @override
-  Future<List<Product>> getItems(String lastId, String catId) {
-    return Future.value(productsBox!.values.toList());
   }
 
   @override
@@ -67,5 +63,10 @@ class CashDatabase implements AllItemsDataSource {
   @override
   Stream<int>? noNotifications() {
     return null;
+  }
+
+  @override
+  Future<List<Product>> getItems(String catId, String lastId) {
+    return Future.value(productsBox!.values.toList());
   }
 }

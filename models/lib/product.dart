@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 part 'product.g.dart';
 
@@ -23,18 +22,20 @@ class Product extends Equatable {
   final bool isFavourite;
   @HiveField(8)
   final bool isPopular;
+  @HiveField(9)
+  final String catId;
 
-  Product({
-    required this.id,
-    required this.images,
-    required this.colors,
-    this.rating = 0.0,
-    this.isFavourite = false,
-    this.isPopular = false,
-    required this.title,
-    required this.price,
-    required this.description,
-  });
+  Product(
+      {required this.id,
+      required this.images,
+      required this.colors,
+      this.rating = 0.0,
+      this.isFavourite = false,
+      this.isPopular = false,
+      required this.title,
+      required this.price,
+      required this.description,
+      required this.catId});
 
   @override
   List<Object> get props => [
@@ -46,7 +47,8 @@ class Product extends Equatable {
         rating,
         price,
         isFavourite,
-        isPopular
+        isPopular,
+        catId
       ];
 
   static Product fromDocument(Map<String, dynamic> map) {
@@ -59,6 +61,7 @@ class Product extends Equatable {
         isFavourite: map["isFavourite"],
         isPopular: map["isPopular"],
         price: double.parse(map["price"].toString()),
-        description: map["description"]);
+        description: map["description"],
+        catId: map["catId"]);
   }
 }

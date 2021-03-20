@@ -26,6 +26,7 @@ class _BodyState extends State<Body> {
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
@@ -33,9 +34,10 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        child: Obx(
-          () {
-            var viewstate = _controller.viewState.value;
+        child: GetX<AllItemsController>(
+          init: _controller,
+          builder: (controller) {
+            var viewstate = controller.viewState.value;
             return Column(
               children: [
                 SizedBox(height: getProportionateScreenHeight(20)),

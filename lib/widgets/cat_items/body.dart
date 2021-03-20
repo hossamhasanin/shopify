@@ -28,6 +28,12 @@ class _BodyState extends State<Body> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: GetX<CatItemsController>(
@@ -48,9 +54,10 @@ class _BodyState extends State<Body> {
           ));
         } else if (viewstate.items.length > 0) {
           return ListOfItems(
+            refresh: controller.refreshItems(widget.cat.id),
             products: viewstate.items,
-            loadmore: (String catId, String lastId) =>
-                _controller.loadMore(catId, lastId),
+            loadmore: (String lastId) =>
+                _controller.loadMore(widget.cat.id, lastId),
             catId: widget.cat.id,
           );
         } else if (viewstate.loading) {

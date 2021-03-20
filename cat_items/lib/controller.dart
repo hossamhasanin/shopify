@@ -4,6 +4,7 @@ import 'package:cat_items/datasource.dart';
 import 'package:cat_items/events/cat_items_event.dart';
 import 'package:cat_items/events/get_items.dart';
 import 'package:cat_items/events/load_more.dart';
+import 'package:cat_items/events/refresh.dart';
 import 'package:cat_items/repository.dart';
 import 'package:cat_items/repository_impl.dart';
 import 'package:cat_items/usecase.dart';
@@ -31,6 +32,8 @@ class CatItemsController extends GetxController {
         _getItems(event);
       } else if (event is LoadMore) {
         _loadMore(event);
+      } else if (event is Refresh) {
+        _refresh(event);
       }
     });
   }
@@ -43,6 +46,10 @@ class CatItemsController extends GetxController {
     _eventHandler.sink.add(LoadMore(catId: catId, lastId: lastId));
   }
 
+  refreshItems(String catId) {
+    _eventHandler.sink.add(Refresh(catId: catId));
+  }
+
   _getItems(GetItems event) async {
     viewstate.value = await _useCase.getItems(event.catId, "", viewstate.value);
   }
@@ -50,6 +57,10 @@ class CatItemsController extends GetxController {
   _loadMore(LoadMore event) async {
     viewstate.value =
         await _useCase.getItems(event.catId, event.lastId, viewstate.value);
+  }
+
+  _refresh(Refresh event) async {
+    viewstate.value = await _useCase.getItems(event.catId, "", viewstate.value);
   }
 
   @override

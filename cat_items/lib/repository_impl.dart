@@ -15,11 +15,11 @@ class RepositoryImpl implements CatItemsRepo {
   @override
   Future<List<Product>> getCatItems(String catId, String lastId) async {
     try {
-      var items = await _networkDatasource.getItemsFromNetwork(catId, lastId);
-      await _cashDataSource.cashCatItems(catId, items);
+      var items = await _networkDatasource.getItems(catId, lastId);
+      await _cashDataSource.cashItems(items);
       return items;
     } catch (e) {
-      return _cashDataSource.getItemsFromCash(catId);
+      return _cashDataSource.getItems(catId, lastId);
     }
   }
 }
