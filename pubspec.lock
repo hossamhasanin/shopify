@@ -373,6 +373,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
+  product_details:
+    dependency: "direct main"
+    description:
+      path: product_details
+      relative: true
+    source: path
+    version: "0.0.1"
   simple_animations:
     dependency: transitive
     description:

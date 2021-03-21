@@ -43,5 +43,7 @@ const String FIRST_TIME_OPEN = "isFirstTime";
 const String CATS_COLLECTION = "cats";
 const String NOTIFICATIONS_COLLECTION = "notifications";
 const String PRODUCTS_COLLECTION = "products";
+const String CART_COLLECTION = "cart";
 
 const int ITEMS_LIMIT = 30;
+const int POPULAR_ITEMS_LIMIT = 5;

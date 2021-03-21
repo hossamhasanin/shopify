@@ -65,4 +65,19 @@ class Product extends Equatable {
         description: map["description"],
         catId: map["catId"]);
   }
+
+  Map<String, dynamic> tomap() {
+    return {
+      "id": id,
+      "title": title,
+      "images": images,
+      "colors": colors,
+      "rating": rating,
+      "isFavourite": isFavourite,
+      "isPopular": isPopular,
+      "price": price,
+      "description": description,
+      "catId": catId
+    };
+  }
 }

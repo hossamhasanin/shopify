@@ -53,6 +53,9 @@ dependencies:
     path: cat_items
   app_bar:
     path: app_bar  
+  product_details:
+    path: product_details
+
 
 dev_dependencies:
   flutter_test:

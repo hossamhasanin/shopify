@@ -5,16 +5,13 @@ import 'package:shopify/widgets/utils/components/product_card.dart';
 class ListOfItems extends StatelessWidget {
   late Function(String) _loadmore;
   late Future Function() _refresh;
-  late String _catId;
   late List<Product> _products;
   ScrollController _scrollController = ScrollController();
   ListOfItems(
       {required Function(String) loadmore,
       required List<Product> products,
-      required String catId,
       required Future Function() refresh})
       : this._loadmore = loadmore,
-        this._catId = catId,
         this._products = products,
         this._refresh = refresh;
   @override

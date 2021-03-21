@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shopify/widgets/cat_items/cat_items_screen.dart';
 import 'package:shopify/widgets/utils/components/product_card.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 import 'package:models/models.dart';
@@ -14,7 +16,11 @@ class PopularProducts extends StatelessWidget {
         Padding(
           padding:
               EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
-          child: SectionTitle(title: "Popular Products", press: () {}),
+          child: SectionTitle(
+              title: "Popular Products",
+              press: () {
+                Get.toNamed(CatItemsScreen.routeName, arguments: null);
+              }),
         ),
         SizedBox(height: getProportionateScreenWidth(20)),
         SingleChildScrollView(

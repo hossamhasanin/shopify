@@ -1,7 +1,4 @@
 library product_details;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export './datasource.dart';
+export './controller.dart';

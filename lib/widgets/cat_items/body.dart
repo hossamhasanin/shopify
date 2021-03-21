@@ -9,8 +9,8 @@ import 'package:shopify/widgets/cat_items/list_of_items.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 
 class Body extends StatefulWidget {
-  Category cat;
-  Body({required this.cat});
+  Category? cat;
+  Body({this.cat});
 
   @override
   _BodyState createState() => _BodyState();
@@ -18,15 +18,15 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
   late CatItemsController _controller;
-
+  late String catId;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    catId = widget.cat == null ? "" : widget.cat!.id;
     _controller = Get.find();
     if (_controller.viewstate.value!.items.length == 0)
-      _controller.getItems(widget.cat.id);
+      _controller.getItems(catId);
     debugPrint("init cat items");
   }
 
@@ -66,13 +66,12 @@ class _BodyState extends State<Body> {
                 return ListOfItems(
                   refresh: () {
                     debugPrint("I am refreshing");
-                    return controller.refreshItems(widget.cat.id);
+                    return controller.refreshItems(catId);
                     //return Future.value();
                   },
                   products: viewstate.items,
                   loadmore: (String lastId) =>
-                      _controller.loadMore(widget.cat.id, lastId),
-                  catId: widget.cat.id,
+                      _controller.loadMore(catId, lastId),
                 );
               } else if (viewstate.loading) {
                 return Center(
