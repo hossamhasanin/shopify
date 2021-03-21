@@ -25,13 +25,16 @@ class _BodyState extends State<Body> {
     super.initState();
 
     _controller = Get.find();
-    _controller.getItems(widget.cat.id);
+    if (_controller.viewstate.value!.items.length == 0)
+      _controller.getItems(widget.cat.id);
+    debugPrint("init cat items");
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
+    // _controller.dispose();
+    debugPrint("dispose cat items");
   }
 
   @override
@@ -61,7 +64,11 @@ class _BodyState extends State<Body> {
                 ));
               } else if (viewstate.items.length > 0) {
                 return ListOfItems(
-                  refresh: controller.refreshItems(widget.cat.id),
+                  refresh: () {
+                    debugPrint("I am refreshing");
+                    return controller.refreshItems(widget.cat.id);
+                    //return Future.value();
+                  },
                   products: viewstate.items,
                   loadmore: (String lastId) =>
                       _controller.loadMore(widget.cat.id, lastId),

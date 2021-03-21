@@ -27,7 +27,7 @@ class _BodyState extends State<Body> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 
@@ -62,7 +62,7 @@ class _BodyState extends State<Body> {
                         : SpecialOffers(),
                     SizedBox(height: getProportionateScreenWidth(30)),
                     viewstate.error != null
-                        ? Center(child: Text(viewstate.error))
+                        ? Text(viewstate.error)
                         : SizedBox.shrink(),
                     viewstate.loading
                         ? Container(

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:models/models.dart';
 
 import 'repository.dart';
@@ -27,14 +28,18 @@ class AllItemsRepoImp implements AllItemsRepo {
 
   @override
   Future<List<Product>> getPopItemes(String catId) async {
-    var popItems;
+    List<Product> popItems;
     try {
       popItems = await _networkDatasource.getPopularItems();
+      debugPrint("repo pop items " + popItems.toString());
       await _cashkDatasource.cashPopularItems(popItems);
     } catch (e) {
       print(e);
-      popItems = _cashkDatasource.getPopularItems();
+      debugPrint("repo pop items error " + e.toString());
+      popItems = await _cashkDatasource.getPopularItems();
     }
+    debugPrint("repo pop items " + popItems.length.toString());
+
     return popItems;
   }
 }

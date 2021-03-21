@@ -6,15 +6,17 @@ import 'package:shopify/constants.dart';
 import '../helpers.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({
-    required Key key,
-    this.width = 140,
-    this.aspectRetio = 1.02,
-    required this.product,
-  }) : super(key: key);
+  const ProductCard(
+      {required Key key,
+      this.width = 140,
+      this.aspectRetio = 1.02,
+      required this.product,
+      this.isPopular = false})
+      : super(key: key);
 
   final double width, aspectRetio;
   final Product product;
+  final bool isPopular;
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +34,20 @@ class ProductCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AspectRatio(
-                aspectRatio: 1.02,
-                child: Container(
-                  padding: EdgeInsets.all(getProportionateScreenWidth(20)),
-                  decoration: BoxDecoration(
-                    color: kSecondaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Hero(
-                    tag: product.id.toString(),
-                    child: Image.network(product.images[1]),
+              Expanded(
+                flex: isPopular ? 0 : 1,
+                child: AspectRatio(
+                  aspectRatio: 1.02,
+                  child: Container(
+                    padding: EdgeInsets.all(getProportionateScreenWidth(20)),
+                    decoration: BoxDecoration(
+                      color: kSecondaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Hero(
+                      tag: product.id.toString(),
+                      child: Image.network(product.images[1]),
+                    ),
                   ),
                 ),
               ),

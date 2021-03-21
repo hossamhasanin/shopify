@@ -2,6 +2,7 @@ import 'package:all_items/all_items.dart';
 import 'package:cat_items/datasource.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:models/models.dart';
 import 'package:shopify/constants.dart';
 
@@ -78,19 +79,20 @@ class FirebaseDataSource
         ? await _firestore
             .collection(PRODUCTS_COLLECTION)
             .where("catId", isEqualTo: catId)
-            .orderBy("id")
+            .orderBy("id", descending: true)
             .limit(ITEMS_LIMIT)
             .get()
         : await _firestore
             .collection(PRODUCTS_COLLECTION)
             .where("catId", isEqualTo: catId)
-            .orderBy("id")
+            .orderBy("id", descending: true)
             .limit(ITEMS_LIMIT)
             .startAfter([lastId]).get();
     if (itemsQuery.size > 0) {
       List<Product> items = itemsQuery.docs
           .map((snapshot) => Product.fromDocument(snapshot.data()!))
           .toList();
+      debugPrint("num items " + items.length.toString());
       return items;
     } else {
       return List.empty();

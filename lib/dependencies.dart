@@ -1,5 +1,6 @@
 import 'package:all_items/all_items.dart';
 import 'package:all_items/all_items_controller.dart';
+import 'package:app_bar/app_bar.dart';
 import 'package:authentication_x/AuthController.dart';
 import 'package:authentication_x/authentication_x.dart';
 import 'package:authentication_x/validators/FormValidator.dart';
@@ -16,20 +17,18 @@ import 'datasources/auth/FirebaseAuthDatasource.dart';
 inject() {
   Get.put(FormValidator());
   Get.put<AuthDataSource>(FirebaseAuthDatasource());
-  Get.create<AuthController>(() => AuthController(authDataSource: Get.find()));
-  Get.put(
-      FirebaseDataSource(
-          firestore: FirebaseFirestore.instance, auth: FirebaseAuth.instance),
-      tag: "networkDatasource");
-  Get.put(CashDatabase(), tag: "cashDatasource");
+  Get.put(AuthController(authDataSource: Get.find()));
+  Get.put(FirebaseDataSource(
+      firestore: FirebaseFirestore.instance, auth: FirebaseAuth.instance));
+  Get.put(CashDatabase());
 
-  Get.create<AllItemsController>(() => AllItemsController(
-      networkDatasource:
-          Get.find(tag: "networkDatasource") as AllItemsDataSource,
-      cashDatasource: Get.find(tag: "cashDatasource") as AllItemsDataSource));
+  Get.put(AllItemsController(
+      networkDatasource: Get.find<FirebaseDataSource>(),
+      cashDatasource: Get.find<CashDatabase>()));
 
-  Get.create<CatItemsController>(() => CatItemsController(
-      cashDatasource: Get.find(tag: "cashDatasource") as CatItemsDatasource,
-      networkDatasource:
-          Get.find(tag: "networkDatasource") as CatItemsDatasource));
+  Get.put(CatItemsController(
+      cashDatasource: Get.find<CashDatabase>(),
+      networkDatasource: Get.find<FirebaseDataSource>()));
+
+  Get.put(AppBarController(datasource: Get.find<FirebaseDataSource>()));
 }

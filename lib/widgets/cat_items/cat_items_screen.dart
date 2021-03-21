@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:models/models.dart';
+import './body.dart';
 
 class CatItemsScreen extends StatelessWidget {
   static String routeName = "/cat_items";
-  String catId = Get.arguments;
+  Category cat = Get.arguments;
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      body: Body(
+        cat: cat,
+      ),
+    );
   }
 }

@@ -9,6 +9,7 @@ import 'package:cat_items/repository.dart';
 import 'package:cat_items/repository_impl.dart';
 import 'package:cat_items/usecase.dart';
 import 'package:cat_items/viewstate.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CatItemsController extends GetxController {
@@ -51,22 +52,26 @@ class CatItemsController extends GetxController {
   }
 
   _getItems(GetItems event) async {
-    viewstate.value = await _useCase.getItems(event.catId, "", viewstate.value);
+    viewstate.value =
+        await _useCase.getItems(event.catId, "", viewstate.value!);
+    debugPrint("usecase num items " + viewstate.value!.items.length.toString());
   }
 
   _loadMore(LoadMore event) async {
     viewstate.value =
-        await _useCase.getItems(event.catId, event.lastId, viewstate.value);
+        await _useCase.getItems(event.catId, event.lastId, viewstate.value!);
   }
 
   _refresh(Refresh event) async {
-    viewstate.value = await _useCase.getItems(event.catId, "", viewstate.value);
+    viewstate.value =
+        await _useCase.getItems(event.catId, "", viewstate.value!);
   }
 
   @override
   void onClose() {
     _eventHandler.close();
     viewstate.close();
+    debugPrint("close cat items");
     super.onClose();
   }
 }

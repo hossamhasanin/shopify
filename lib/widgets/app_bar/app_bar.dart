@@ -22,7 +22,7 @@ class _HeaderAppBarState extends State<HeaderAppBar> {
 
   @override
   void dispose() {
-    _appBarController.dispose();
+    // _appBarController.dispose();
     super.dispose();
   }
 
@@ -31,6 +31,7 @@ class _HeaderAppBarState extends State<HeaderAppBar> {
     return GetX<AppBarController>(
         init: _appBarController,
         builder: (controller) {
+          debugPrint("noti is " + controller.noNotifications.value.toString());
           return HomeHeader(noNotifications: controller.noNotifications.value);
         });
   }

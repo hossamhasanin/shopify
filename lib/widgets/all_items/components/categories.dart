@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:shopify/widgets/cat_items/cat_items_screen.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 import 'package:models/models.dart' as M;
 
@@ -25,7 +27,10 @@ class Categories extends StatelessWidget {
                 key: ValueKey(categories[index].id),
                 icon: categories[index].icon,
                 text: categories[index].name,
-                press: () {},
+                press: () {
+                  Get.toNamed(CatItemsScreen.routeName,
+                      arguments: categories[index]);
+                },
               ),
             ),
           ),

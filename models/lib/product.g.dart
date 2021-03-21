@@ -17,22 +17,23 @@ class ProductAdapter extends TypeAdapter<Product> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Product(
-      id: fields[0] as dynamic,
-      images: fields[3] as dynamic,
-      colors: fields[4] as dynamic,
+      id: fields[0] as String,
+      images: (fields[3] as List).cast<dynamic>(),
+      colors: (fields[4] as List).cast<dynamic>(),
       rating: fields[5] as double,
       isFavourite: fields[7] as bool,
       isPopular: fields[8] as bool,
-      title: fields[1] as dynamic,
-      price: fields[6] as dynamic,
-      description: fields[2] as dynamic,
+      title: fields[1] as String,
+      price: fields[6] as double,
+      description: fields[2] as String,
+      catId: fields[9] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..writeByte(7)
       ..write(obj.isFavourite)
       ..writeByte(8)
-      ..write(obj.isPopular);
+      ..write(obj.isPopular)
+      ..writeByte(9)
+      ..write(obj.catId);
   }
 
   @override

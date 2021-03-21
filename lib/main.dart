@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shopify/constants.dart';
+import 'package:shopify/datasources/database/CashDatabase.dart';
 import 'package:shopify/dependencies.dart';
 import 'package:shopify/theme.dart';
 import 'package:shopify/widgets/all_items/AllItemsScreen.dart';
@@ -49,8 +50,7 @@ class HomeWidget extends StatelessWidget {
           SizeConfig().init(context);
 
           inject();
-          Get.find<AllItemsDataSource>(tag: "cashDatasource")
-              .initCashDatabase();
+          Get.find<CashDatabase>().initCashDatabase();
           GetStorage box = GetStorage();
 
           if (Get.find<AuthController>().isLoggedIn()) {

@@ -9,6 +9,7 @@ class AllItemsUseCase {
   Future<AllItemsViewState> getItems(AllItemsViewState viewState) async {
     try {
       var items = await _repo.getPopItemes(viewState.catId!);
+      debugPrint("pop items " + items.length.toString());
       return viewState.copy(loading: false, popularItems: items);
     } catch (e) {
       print(e);

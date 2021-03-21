@@ -28,7 +28,9 @@ class AppBarController extends GetxController {
 
   _getNoNotifications() {
     _noNotificationsListener = _datasource.noNotifications()!.listen((number) {
+      debugPrint("num is " + number.toString());
       noNotifications.value = number;
+      debugPrint("noti is " + noNotifications.value.toString());
     })
       ..onError((e) {
         debugPrint(e);
