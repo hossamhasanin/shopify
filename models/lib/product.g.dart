@@ -19,7 +19,7 @@ class ProductAdapter extends TypeAdapter<Product> {
     return Product(
       id: fields[0] as String,
       images: (fields[3] as List).cast<dynamic>(),
-      colors: (fields[4] as List).cast<dynamic>(),
+      colors: (fields[4] as List).cast<int>(),
       rating: fields[5] as double,
       isFavourite: fields[7] as bool,
       isPopular: fields[8] as bool,

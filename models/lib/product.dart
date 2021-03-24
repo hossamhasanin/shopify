@@ -14,7 +14,7 @@ class Product extends Equatable {
   @HiveField(3)
   final List images;
   @HiveField(4)
-  final List colors;
+  final List<int> colors;
   @HiveField(5)
   final double rating;
   @HiveField(6)
@@ -57,7 +57,7 @@ class Product extends Equatable {
         id: map["id"],
         title: map["title"],
         images: map["images"],
-        colors: map["colors"],
+        colors: List<int>.from(map["colors"]),
         rating: double.parse(map["rating"].toString()),
         isFavourite: map["isFavourite"],
         isPopular: map["isPopular"],
