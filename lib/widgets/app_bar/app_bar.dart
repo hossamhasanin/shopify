@@ -18,6 +18,7 @@ class _HeaderAppBarState extends State<HeaderAppBar> {
 
     _appBarController = Get.find();
     _appBarController.getNoNotifications();
+    _appBarController.getNumCartProduct();
   }
 
   @override
@@ -28,11 +29,6 @@ class _HeaderAppBarState extends State<HeaderAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    return GetX<AppBarController>(
-        init: _appBarController,
-        builder: (controller) {
-          debugPrint("noti is " + controller.noNotifications.value.toString());
-          return HomeHeader(noNotifications: controller.noNotifications.value);
-        });
+    return HomeHeader();
   }
 }

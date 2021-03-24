@@ -1,3 +1,4 @@
 abstract class AppBarDatasource {
-  Stream<int>? noNotifications();
+  Stream<int> noNotifications();
+  numCartProducts();
 }

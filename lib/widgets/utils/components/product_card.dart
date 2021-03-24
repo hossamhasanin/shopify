@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:models/models.dart';
 import 'package:shopify/constants.dart';
+import 'package:shopify/widgets/product_details/details_screen.dart';
 
 import '../helpers.dart';
 
@@ -30,7 +32,14 @@ class ProductCard extends StatelessWidget {
           //   DetailsScreen.routeName,
           //   arguments: ProductDetailsArguments(product: product),
           // ),
-          onTap: () {},
+          onTap: () {
+            debugPrint("static carts " + Cart.carts.length.toString());
+            Get.toNamed(DetailsScreen.routeName,
+                arguments: Cart.carts.singleWhere(
+                    (cart) => cart.product.id == product.id,
+                    orElse: () => Cart(
+                        product: product, numOfItem: 1, selectedColor: 0)));
+          },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

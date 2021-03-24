@@ -4,6 +4,7 @@ import 'package:app_bar/app_bar.dart';
 import 'package:authentication_x/AuthController.dart';
 import 'package:authentication_x/authentication_x.dart';
 import 'package:authentication_x/validators/FormValidator.dart';
+import 'package:cart/cart.dart';
 import 'package:cat_items/controller.dart';
 import 'package:cat_items/datasource.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -31,4 +32,6 @@ inject() {
       networkDatasource: Get.find<FirebaseDataSource>()));
 
   Get.put(AppBarController(datasource: Get.find<FirebaseDataSource>()));
+
+  Get.put(CartController(dataSource: Get.find<FirebaseDataSource>()));
 }

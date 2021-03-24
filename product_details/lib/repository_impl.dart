@@ -11,7 +11,17 @@ class ProductDetailsRepoImpl implements ProductDetailsRepo {
       : this._networkDataSource = networkDataSource;
 
   @override
-  Future addToCart(Product product) {
-    return _networkDataSource.addToCart(product);
+  Future addToCart(Cart cart) {
+    return _networkDataSource.addToCart(cart);
+  }
+
+  @override
+  Future removeFromCart(Cart cart) {
+    return _networkDataSource.removeFromCart(cart);
+  }
+
+  @override
+  Future editProductCart(Cart cart) {
+    return _networkDataSource.editProductCart(cart);
   }
 }

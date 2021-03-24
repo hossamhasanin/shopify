@@ -10,7 +10,9 @@ import 'package:shopify/dependencies.dart';
 import 'package:shopify/theme.dart';
 import 'package:shopify/widgets/all_items/AllItemsScreen.dart';
 import 'package:shopify/widgets/auth/AuthUi.dart';
+import 'package:shopify/widgets/cart/cart_screen.dart';
 import 'package:shopify/widgets/cat_items/cat_items_screen.dart';
+import 'package:shopify/widgets/product_details/details_screen.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 
 void main() {
@@ -26,7 +28,9 @@ class MyApp extends StatelessWidget {
         title: 'Shopify',
         getPages: [
           GetPage(name: AllItemsScreen.routeName, page: () => AllItemsScreen()),
-          GetPage(name: CatItemsScreen.routeName, page: () => CatItemsScreen())
+          GetPage(name: CatItemsScreen.routeName, page: () => CatItemsScreen()),
+          GetPage(name: CartScreen.routeName, page: () => CartScreen()),
+          GetPage(name: DetailsScreen.routeName, page: () => DetailsScreen())
         ],
         theme: theme(),
         home: HomeWidget());

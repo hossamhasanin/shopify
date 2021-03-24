@@ -5,16 +5,24 @@ import 'package:shopify/widgets/utils/components/rounded_icon_btn.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 
 class ColorDots extends StatelessWidget {
-  const ColorDots({
-    required this.product,
-  });
+  const ColorDots(
+      {required this.product,
+      required this.numOfItem,
+      required this.addItem,
+      required this.removeItem,
+      required this.selectedColor,
+      required this.selectColor});
 
   final Product product;
+  final int numOfItem;
+  final Function() addItem;
+  final Function() removeItem;
+  final Function(int) selectColor;
+  final int selectedColor;
 
   @override
   Widget build(BuildContext context) {
     // Now this is fixed and only for demo
-    int selectedColor = 3;
     return Padding(
       padding:
           EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20)),
@@ -22,21 +30,28 @@ class ColorDots extends StatelessWidget {
         children: [
           ...List.generate(
             product.colors.length,
-            (index) => ColorDot(
-              color: product.colors[index],
-              isSelected: index == selectedColor,
+            (index) => GestureDetector(
+              onTap: () => selectColor(product.colors[index]),
+              child: ColorDot(
+                color: Color(product.colors[index]),
+                isSelected: selectedColor == 0 && index == 0
+                    ? true
+                    : product.colors[index] == selectedColor,
+              ),
             ),
           ),
           Spacer(),
           RoundedIconBtn(
             icon: Icons.remove,
-            press: () {},
+            press: removeItem,
           ),
-          SizedBox(width: getProportionateScreenWidth(20)),
+          SizedBox(width: getProportionateScreenWidth(10)),
+          Text(numOfItem.toString()),
+          SizedBox(width: getProportionateScreenWidth(10)),
           RoundedIconBtn(
             icon: Icons.add,
             showShadow: true,
-            press: () {},
+            press: addItem,
           ),
         ],
       ),

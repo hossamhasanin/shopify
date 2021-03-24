@@ -7,14 +7,16 @@ import 'components/custom_app_bar.dart';
 
 class DetailsScreen extends StatelessWidget {
   static String routeName = "/details";
-  final Product _product = Get.arguments;
+  final Cart cart = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF5F6F9),
-      appBar: CustomAppBar(rating: _product.rating).build(context),
-      body: Body(product: _product),
+      appBar: CustomAppBar(rating: cart.product.rating).build(context),
+      body: Body(
+        cart: cart,
+      ),
     );
   }
 }

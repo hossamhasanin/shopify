@@ -1,9 +1,11 @@
 import 'package:all_items/all_items.dart';
+import 'package:cart/datasource.dart';
 import 'package:cat_items/datasource.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:models/models.dart';
+
 import 'package:shopify/constants.dart';
 import 'package:product_details/product_details.dart';
 
@@ -14,7 +16,8 @@ class FirebaseDataSource
         AllItemsDataSource,
         CatItemsDatasource,
         AppBarDatasource,
-        ProductDetailsDataSource {
+        ProductDetailsDataSource,
+        CartDataSource {
   FirebaseFirestore _firestore;
   FirebaseAuth _auth;
   FirebaseDataSource(
@@ -40,7 +43,7 @@ class FirebaseDataSource
     var itemsQuery = await _firestore
         .collection(PRODUCTS_COLLECTION)
         .where("isPopular", isEqualTo: true)
-        .orderBy("id", descending: true)
+        .orderBy("created_at", descending: true)
         .limit(POPULAR_ITEMS_LIMIT)
         .get();
     if (itemsQuery.size > 0) {
@@ -70,7 +73,7 @@ class FirebaseDataSource
   }
 
   @override
-  Stream<int>? noNotifications() async* {
+  Stream<int> noNotifications() async* {
     var notificationDoc = _firestore
         .collection(USERS_COLLECTION)
         .doc(_auth.currentUser!.uid)
@@ -123,12 +126,96 @@ class FirebaseDataSource
   }
 
   @override
-  Future addToCart(Product product) {
+  Future addToCart(Cart cart) {
+    var query = _firestore
+        .collection(USERS_COLLECTION)
+        .doc(_auth.currentUser!.uid)
+        .collection(CART_COLLECTION);
+    var cartMap = cart.product.tomap();
+    cartMap["numOfItem"] = cart.numOfItem;
+    cartMap["selectedColor"] = cart.selectedColor;
+    cartMap["created_at"] = FieldValue.serverTimestamp();
+
+    Cart.carts.add(cart);
+    return query.doc(cart.product.id).set(cartMap);
+  }
+
+  @override
+  Future<List<Cart>> getCarts() async {
+    var query = await _firestore
+        .collection(USERS_COLLECTION)
+        .doc(_auth.currentUser!.uid)
+        .collection(CART_COLLECTION)
+        .orderBy("created_at", descending: true)
+        .get();
+
+    var carts = query.docs.map((cart) {
+      Product product = Product.fromDocument(cart.data()!);
+      var carts = Cart(
+          product: product,
+          numOfItem: cart.data()!["numOfItem"],
+          selectedColor: cart.data()!["selectedColor"]);
+      return carts;
+    }).toList();
+    Cart.carts.clear();
+    Cart.carts.addAll(carts);
+    return carts;
+  }
+
+  @override
+  Future removeProduct(String productId) {
     var query = _firestore
         .collection(USERS_COLLECTION)
         .doc(_auth.currentUser!.uid)
         .collection(CART_COLLECTION);
 
-    return query.doc(product.id).set(product.tomap());
+    Cart.carts.removeWhere((cart) => cart.product.id == productId);
+    return query.doc(productId).delete();
+  }
+
+  @override
+  Future numCartProducts() async {
+    var query = _firestore
+        .collection(USERS_COLLECTION)
+        .doc(_auth.currentUser!.uid)
+        .collection(CART_COLLECTION);
+    var carts = (await query.get()).docs.map((doc) {
+      Product product = Product.fromDocument(doc.data()!);
+      var carts = Cart(
+          product: product,
+          numOfItem: doc.data()!["numOfItem"],
+          selectedColor: doc.data()!["selectedColor"]);
+      return carts;
+    });
+    Cart.carts.clear();
+    Cart.carts.addAll(carts);
+    return carts.length;
+  }
+
+  @override
+  Future removeFromCart(Cart cart) {
+    var query = _firestore
+        .collection(USERS_COLLECTION)
+        .doc(_auth.currentUser!.uid)
+        .collection(CART_COLLECTION);
+
+    Cart.carts.removeWhere((cartL) => cartL.product.id == cart.product.id);
+    return query.doc(cart.product.id).delete();
+  }
+
+  @override
+  Future editProductCart(Cart cart) {
+    var query = _firestore
+        .collection(USERS_COLLECTION)
+        .doc(_auth.currentUser!.uid)
+        .collection(CART_COLLECTION);
+
+    var map = cart.product.tomap();
+    map["numOfItem"] = cart.numOfItem;
+    map["selectedColor"] = cart.selectedColor;
+    var cartIndex =
+        Cart.carts.indexWhere((c) => c.product.id == cart.product.id);
+    Cart.carts[cartIndex] = cart;
+    return query.doc(cart.product.id).update(map);
   }
 }

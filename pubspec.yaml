@@ -55,6 +55,8 @@ dependencies:
     path: app_bar  
   product_details:
     path: product_details
+  cart:
+    path: cart  
 
 
 dev_dependencies:
