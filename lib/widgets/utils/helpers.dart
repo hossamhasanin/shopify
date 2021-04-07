@@ -1,4 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:models/cart.dart';
+import 'package:models/notification.dart' as N;
 
 class SizeConfig {
   static late MediaQueryData _mediaQueryData;
@@ -69,4 +73,33 @@ showCustomDialog(
       context: context,
       builder: (BuildContext context) => dialog,
       barrierDismissible: dissmissable);
+}
+
+notificationListenInForground() async {
+  FirebaseMessaging.instance
+      .setForegroundNotificationPresentationOptions(alert: true, sound: true);
+  FirebaseMessaging.instance.subscribeToTopic("all");
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    print("notify");
+
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+
+    if (notification != null && android != null) {
+      N.Notification.notification.add(N.Notification(
+          id: message.messageId!,
+          title: notification.title!,
+          desc: notification.body!));
+      Get.snackbar(notification.title!, notification.body!);
+    }
+  });
+}
+
+int calcCartItems() {
+  var items = 0;
+  Cart.carts.forEach((element) {
+    items += element.numOfItem;
+  });
+  return items;
 }

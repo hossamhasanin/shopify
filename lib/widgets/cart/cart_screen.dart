@@ -1,6 +1,8 @@
 import 'package:cart/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:models/models.dart';
+import 'package:shopify/widgets/utils/helpers.dart';
 
 import 'components/body.dart';
 import 'components/check_out_card.dart';
@@ -28,9 +30,9 @@ class CartScreen extends StatelessWidget {
             "Your Cart",
             style: TextStyle(color: Colors.black),
           ),
-          GetX<CartController>(builder: (controller) {
+          Obx(() {
             return Text(
-              "${controller.numOfAllItems.value} items",
+              "${calcCartItems()} items",
               style: Theme.of(context).textTheme.caption,
             );
           }),

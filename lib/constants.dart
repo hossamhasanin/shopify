@@ -44,6 +44,9 @@ const String CATS_COLLECTION = "cats";
 const String NOTIFICATIONS_COLLECTION = "notifications";
 const String PRODUCTS_COLLECTION = "products";
 const String CART_COLLECTION = "cart";
+const String ADRESS_COLLECTION = "address";
+const String ORDER_COLLECTION = "order";
+const String CODES_COLLECTION = "codes";
 
 const int ITEMS_LIMIT = 30;
 const int POPULAR_ITEMS_LIMIT = 5;

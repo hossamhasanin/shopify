@@ -23,11 +23,46 @@ class _BodyState extends State<Body> {
     _controller.getCarts();
 
     _controller.eventstate.stream.distinct().listen((state) {
-      if (state!.removeDone) {
+      if (state!.done) {
         Get.snackbar("Done .", "Removed successfuly .");
-      } else if (state.removeError.isNotEmpty) {
-        Get.snackbar("Error !", state.removeError,
+      } else if (state.error.isNotEmpty) {
+        Get.snackbar("Error !", state.error,
             backgroundColor: Colors.red.withOpacity(0.4));
+      }
+    });
+    _controller.viewState.stream.distinct().listen((state) {
+      if (state!.voucherCodes.isNotEmpty) {
+        Get.defaultDialog(
+            title: "Voucher code " + state.voucherCodes.last.title,
+            middleText: "Applied successfuly");
+      } else if (state.errorCode.isNotEmpty) {
+        Get.defaultDialog(
+            title: "Error !",
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 5.0,
+                ),
+                Text(
+                  state.errorCode,
+                  style: TextStyle(color: Colors.grey),
+                )
+              ],
+            ));
+      } else if (state.loadingCode) {
+        Get.defaultDialog(
+            title: "Wait a bit ...",
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 5.0,
+                ),
+                CircularProgressIndicator()
+              ],
+            ),
+            barrierDismissible: false);
       }
     });
   }

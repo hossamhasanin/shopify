@@ -5,11 +5,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:models/models.dart';
+import 'package:models/notification.dart' as N;
+import 'package:pay/datasource.dart';
 
 import 'package:shopify/constants.dart';
 import 'package:product_details/product_details.dart';
 
 import 'package:app_bar/app_bar.dart';
+import 'package:shopify/widgets/utils/guid_gen.dart';
 
 class FirebaseDataSource
     implements
@@ -17,7 +20,8 @@ class FirebaseDataSource
         CatItemsDatasource,
         AppBarDatasource,
         ProductDetailsDataSource,
-        CartDataSource {
+        CartDataSource,
+        PayDatasource {
   FirebaseFirestore _firestore;
   FirebaseAuth _auth;
   FirebaseDataSource(
@@ -72,16 +76,18 @@ class FirebaseDataSource
     return null;
   }
 
-  @override
-  Stream<int> noNotifications() async* {
-    var notificationDoc = _firestore
-        .collection(USERS_COLLECTION)
-        .doc(_auth.currentUser!.uid)
-        .collection(NOTIFICATIONS_COLLECTION)
-        .where("isReed", isEqualTo: false);
+  // @override
+  // Stream<List<N.Notification>> noNotifications() async* {
+  //   var notificationDoc = _firestore
+  //       .collection(USERS_COLLECTION)
+  //       .doc(_auth.currentUser!.uid)
+  //       .collection(NOTIFICATIONS_COLLECTION)
+  //       .where("isReed", isEqualTo: false);
 
-    yield* notificationDoc.snapshots().asyncMap((data) => data.docs.length);
-  }
+  //   yield* notificationDoc.snapshots().asyncMap((data) => data.docs
+  //       .map((doc) => N.Notification.fromDocument(doc.data()!))
+  //       .toList());
+  // }
 
   @override
   Future<List<Product>> getItems(String catId, String lastId) async {
@@ -217,5 +223,109 @@ class FirebaseDataSource
         Cart.carts.indexWhere((c) => c.product.id == cart.product.id);
     Cart.carts[cartIndex] = cart;
     return query.doc(cart.product.id).update(map);
+  }
+
+  @override
+  Future addAddress(Address address) {
+    var query = _firestore
+        .collection(USERS_COLLECTION)
+        .doc(_auth.currentUser!.uid)
+        .collection(ADRESS_COLLECTION);
+    var id = GUIDGen.generate();
+    var _address = address.copy(id: id);
+    return query.doc(id).set(_address.tomap());
+  }
+
+  @override
+  Future addOrder(Order order, List<Code> codes) async {
+    return _firestore.runTransaction((transaction) async {
+      var query = _firestore.collection(ORDER_COLLECTION);
+      var id = GUIDGen.generate();
+      var _order =
+          order.copy(orderNum: id, payMethod: order.payMethod.split(".")[1]);
+      var map = _order.tomap();
+      map["created_at"] = FieldValue.serverTimestamp();
+      transaction.set(query.doc(id), map);
+      for (Cart cart in order.carts!) {
+        var map = cart.product.tomap();
+        map["numOfItem"] = cart.numOfItem;
+        map["selectedColor"] = cart.selectedColor;
+        transaction.set(
+            query.doc(id).collection(CART_COLLECTION).doc(cart.product.id),
+            map);
+        transaction.delete(_firestore
+            .collection(USERS_COLLECTION)
+            .doc(_auth.currentUser!.uid)
+            .collection(CART_COLLECTION)
+            .doc(cart.product.id));
+      }
+      Cart.carts.clear();
+
+      if (codes.isNotEmpty) {
+        for (Code code in codes) {
+          transaction.set(
+              query.doc(id).collection(CODES_COLLECTION).doc(code.id),
+              code.tomap());
+        }
+      }
+
+      return Future.value();
+    });
+  }
+
+  @override
+  Future deleteAddress(Address address) {
+    var query = _firestore
+        .collection(USERS_COLLECTION)
+        .doc(_auth.currentUser!.uid)
+        .collection(ADRESS_COLLECTION);
+    return query.doc(address.id).delete();
+  }
+
+  @override
+  Future<List<Address>> getAddresses() async {
+    var query = _firestore
+        .collection(USERS_COLLECTION)
+        .doc(_auth.currentUser!.uid)
+        .collection(ADRESS_COLLECTION);
+
+    var docs = await query.get();
+    var addresses =
+        docs.docs.map((doc) => Address.fromDocument(doc.data()!)).toList();
+    return addresses;
+  }
+
+  @override
+  Future upadateAddress(Address address) {
+    var query = _firestore
+        .collection(USERS_COLLECTION)
+        .doc(_auth.currentUser!.uid)
+        .collection(ADRESS_COLLECTION);
+    return query.doc(address.id).update(address.tomap());
+  }
+
+  @override
+  Future<Code?> findVoucherCode(String code) async {
+    DateTime _now = DateTime.now();
+    DateTime curDate = DateTime(_now.year, _now.month, _now.day, 0, 0);
+
+    var query = await _firestore
+        .collection(CODES_COLLECTION)
+        .where("code", isEqualTo: code)
+        .where('endsIn', isGreaterThanOrEqualTo: curDate)
+        .orderBy('endsIn')
+        .get();
+
+    debugPrint("code is " + query.docs.toString());
+    if (query.docs.length > 0) {
+      var _code = Code.fromDocument(query.docs[0].data()!);
+      if (curDate.compareTo(_code.startsIn!) > -1) {
+        return _code;
+      } else {
+        return Future.value(null);
+      }
+    } else {
+      return Future.value(null);
+    }
   }
 }

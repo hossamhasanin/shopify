@@ -1,6 +1,7 @@
 import 'package:all_items/all_items.dart';
 import 'package:authentication_x/authentication_x.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -12,8 +13,12 @@ import 'package:shopify/widgets/all_items/AllItemsScreen.dart';
 import 'package:shopify/widgets/auth/AuthUi.dart';
 import 'package:shopify/widgets/cart/cart_screen.dart';
 import 'package:shopify/widgets/cat_items/cat_items_screen.dart';
+import 'package:shopify/widgets/notifications/notifications_screen.dart';
+import 'package:shopify/widgets/pay/components/put_address_screen.dart';
+import 'package:shopify/widgets/pay/payment_screen.dart';
 import 'package:shopify/widgets/product_details/details_screen.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
+import 'package:models/notification.dart' as N;
 
 void main() {
   GetStorage.init();
@@ -30,15 +35,34 @@ class MyApp extends StatelessWidget {
           GetPage(name: AllItemsScreen.routeName, page: () => AllItemsScreen()),
           GetPage(name: CatItemsScreen.routeName, page: () => CatItemsScreen()),
           GetPage(name: CartScreen.routeName, page: () => CartScreen()),
-          GetPage(name: DetailsScreen.routeName, page: () => DetailsScreen())
+          GetPage(name: DetailsScreen.routeName, page: () => DetailsScreen()),
+          GetPage(
+              name: NotificationsScreen.routeName,
+              page: () => NotificationsScreen()),
+          GetPage(name: PayMentScreen.routeName, page: () => PayMentScreen()),
+          GetPage(
+              name: PutAddressScreen.routeName, page: () => PutAddressScreen()),
         ],
         theme: theme(),
         home: HomeWidget());
   }
 }
 
-class HomeWidget extends StatelessWidget {
+class HomeWidget extends StatefulWidget {
+  @override
+  _HomeWidgetState createState() => _HomeWidgetState();
+}
+
+class _HomeWidgetState extends State<HomeWidget> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -58,6 +82,8 @@ class HomeWidget extends StatelessWidget {
           GetStorage box = GetStorage();
 
           if (Get.find<AuthController>().isLoggedIn()) {
+            notificationListenInForground();
+
             return AllItemsScreen();
           } else if (box.hasData(FIRST_TIME_OPEN) &&
               box.read(FIRST_TIME_OPEN)) {
@@ -82,4 +108,16 @@ class HomeWidget extends StatelessWidget {
       child: Text("Error with the app"),
     );
   }
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+
+  print("Handling a background message: ${message.messageId}");
+
+  N.Notification.notification.add(N.Notification(
+      id: message.messageId!,
+      title: message.notification!.title!,
+      desc: message.notification!.body!));
 }

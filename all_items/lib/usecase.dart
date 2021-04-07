@@ -7,12 +7,12 @@ class AllItemsUseCase {
   AllItemsUseCase({required AllItemsRepo repo}) : this._repo = repo;
 
   Future<AllItemsViewState> getItems(AllItemsViewState viewState) async {
+    var items = await _repo.getPopItemes();
     try {
-      var items = await _repo.getPopItemes(viewState.catId!);
       debugPrint("pop items " + items.length.toString());
       return viewState.copy(loading: false, popularItems: items);
     } catch (e) {
-      print(e);
+      print("all_items error " + e.toString());
       return Future.value(viewState.copy(
           error: "Error while loading the data",
           loadMore: false,

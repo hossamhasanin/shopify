@@ -1,4 +1,6 @@
+import 'package:models/models.dart';
+
 abstract class AppBarDatasource {
-  Stream<int> noNotifications();
+  // Stream<List<Notification>> noNotifications();
   numCartProducts();
 }

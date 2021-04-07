@@ -41,8 +41,12 @@ dependencies:
   #change_app_package_name:
   hive: ^2.0.0
   hive_flutter: ^1.0.0
-  
-  
+  firebase_messaging: ^9.0.1
+  # flutter_local_notifications: ^5.0.0
+  flutter_fawry_pay: ^0.0.2
+  timelines: ^0.1.0
+
+
   authentication_x:
     path: authentication_x
   all_items:
@@ -56,7 +60,9 @@ dependencies:
   product_details:
     path: product_details
   cart:
-    path: cart  
+    path: cart 
+  pay:
+    path: pay   
 
 
 dev_dependencies:
@@ -78,6 +84,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

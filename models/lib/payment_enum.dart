@@ -1,0 +1,1 @@
+enum PaymentEnum { PayOnDeleviry }

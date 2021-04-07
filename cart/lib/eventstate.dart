@@ -1,17 +1,15 @@
 import 'package:equatable/equatable.dart';
 
 class EventState extends Equatable {
-  final bool removeDone;
-  final String removeError;
+  final bool done;
+  final String error;
 
-  const EventState({required this.removeDone, required this.removeError});
+  const EventState({required this.done, required this.error});
 
   @override
-  List<Object?> get props => [removeDone, removeError];
+  List<Object?> get props => [done, error];
 
-  EventState copy({bool? removeDone, String? removeError}) {
-    return EventState(
-        removeDone: removeDone ?? this.removeDone,
-        removeError: removeError ?? this.removeError);
+  EventState copy({bool? done, String? error}) {
+    return EventState(done: done ?? this.done, error: error ?? this.error);
   }
 }

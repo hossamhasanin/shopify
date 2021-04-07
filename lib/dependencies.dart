@@ -10,9 +10,11 @@ import 'package:cat_items/datasource.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:shopify/datasources/database/CashDatabase.dart';
 import 'package:shopify/datasources/database/FirebaseDataSource.dart';
+import 'package:shopify/widgets/app_bar/app_bar.dart';
 import 'datasources/auth/FirebaseAuthDatasource.dart';
 
 inject() {

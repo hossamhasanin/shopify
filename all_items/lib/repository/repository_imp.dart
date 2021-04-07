@@ -27,7 +27,7 @@ class AllItemsRepoImp implements AllItemsRepo {
   }
 
   @override
-  Future<List<Product>> getPopItemes(String catId) async {
+  Future<List<Product>> getPopItemes() async {
     List<Product> popItems;
     try {
       popItems = await _networkDatasource.getPopularItems();
