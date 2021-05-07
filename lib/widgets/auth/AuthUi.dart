@@ -7,6 +7,7 @@ import 'package:shopify/widgets/all_items/AllItemsScreen.dart';
 import 'package:shopify/widgets/auth/login_success/login_success_screen.dart';
 import 'package:shopify/widgets/auth/sign_in/sign_in_screen.dart';
 import 'package:shopify/widgets/auth/sign_up/sign_up_screen.dart';
+import 'package:shopify/widgets/home/home_screen.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 
 class AuthUi extends StatelessWidget {
@@ -23,12 +24,13 @@ class AuthUi extends StatelessWidget {
         } else if (state.isLogged) {
           Get.off(LoginSuccessScreen());
         } else if (state.error != null) {
+          debugPrint("err shit");
           AwesomeDialog(
-              context: context,
-              title: "Error !",
-              desc: state.error.toString(),
-              dialogType: DialogType.ERROR)
-            ..show();
+                  context: context,
+                  title: "Error !",
+                  desc: state.error.toString(),
+                  dialogType: DialogType.ERROR)
+              .show();
         }
       },
       onSignupState: (state) {
@@ -36,7 +38,7 @@ class AuthUi extends StatelessWidget {
           _showLoadingDialog(context);
         } else if (state.isSigned) {
           // go to set settings screen if needed or to the home screen
-          Get.offNamed(AllItemsScreen.routeName);
+          Get.offNamed(HomeScreen.routeName);
         } else if (state.error != null) {
           AwesomeDialog(
               context: context,

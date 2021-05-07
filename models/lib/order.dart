@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:models/cart.dart';
 
@@ -10,6 +11,8 @@ class Order extends Equatable {
   final String orderNum;
   final double totalPrice;
   final int numAllItems;
+  final int orderState;
+  DateTime? cancelledAt;
 
   Order(
       {required this.officialName,
@@ -19,7 +22,9 @@ class Order extends Equatable {
       required this.payMethod,
       required this.totalPrice,
       required this.numAllItems,
-      this.carts});
+      this.carts,
+      required this.orderState,
+      this.cancelledAt});
 
   @override
   List<Object?> get props => [
@@ -30,7 +35,9 @@ class Order extends Equatable {
         address,
         phone,
         payMethod,
-        orderNum
+        orderNum,
+        orderState,
+        cancelledAt
       ];
 
   static Order fromDocument(Map<String, dynamic> map) {
@@ -41,7 +48,9 @@ class Order extends Equatable {
         phone: map["phone"],
         officialName: map["officialName"],
         totalPrice: map["totalPrice"],
-        numAllItems: map["numAllItems"]);
+        numAllItems: map["numAllItems"],
+        orderState: map["orderState"],
+        cancelledAt: (map["cancelledAt"] as Timestamp).toDate());
   }
 
   Map<String, dynamic> tomap() {
@@ -52,19 +61,21 @@ class Order extends Equatable {
       "phone": phone,
       "officialName": officialName,
       "totalPrice": totalPrice,
-      "numAllItems": numAllItems
+      "numAllItems": numAllItems,
+      "orderState": orderState
     };
   }
 
-  Order copy({
-    String? officialName,
-    String? address,
-    String? phone,
-    String? payMethod,
-    String? orderNum,
-    double? totalPrice,
-    int? numAllItems,
-  }) {
+  Order copy(
+      {String? officialName,
+      String? address,
+      String? phone,
+      String? payMethod,
+      String? orderNum,
+      double? totalPrice,
+      int? numAllItems,
+      int? orderState,
+      DateTime? cancelledAt}) {
     return Order(
         address: address ?? this.address,
         phone: phone ?? this.phone,
@@ -72,6 +83,10 @@ class Order extends Equatable {
         orderNum: orderNum ?? this.orderNum,
         officialName: officialName ?? this.officialName,
         totalPrice: totalPrice ?? this.totalPrice,
-        numAllItems: numAllItems ?? this.numAllItems);
+        numAllItems: numAllItems ?? this.numAllItems,
+        orderState: orderState ?? this.orderState,
+        cancelledAt: cancelledAt ?? this.cancelledAt);
   }
 }
+
+enum OrderStates { Ordered, Shipping, Delevired, Cancelled }

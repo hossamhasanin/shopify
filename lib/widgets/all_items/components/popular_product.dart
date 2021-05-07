@@ -33,7 +33,7 @@ class PopularProducts extends StatelessWidget {
                   print(products[index].title);
                   if (products[index].isPopular)
                     return ProductCard(
-                      key: ValueKey(products[index].id),
+                      key: ObjectKey(products[index]),
                       product: products[index],
                       isPopular: true,
                     );

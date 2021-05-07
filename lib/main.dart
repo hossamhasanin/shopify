@@ -13,7 +13,11 @@ import 'package:shopify/widgets/all_items/AllItemsScreen.dart';
 import 'package:shopify/widgets/auth/AuthUi.dart';
 import 'package:shopify/widgets/cart/cart_screen.dart';
 import 'package:shopify/widgets/cat_items/cat_items_screen.dart';
+import 'package:shopify/widgets/favourites/favourites_screen.dart';
+import 'package:shopify/widgets/home/home_screen.dart';
 import 'package:shopify/widgets/notifications/notifications_screen.dart';
+import 'package:shopify/widgets/orders/order_details_screen.dart';
+import 'package:shopify/widgets/orders/orders_screen.dart';
 import 'package:shopify/widgets/pay/components/put_address_screen.dart';
 import 'package:shopify/widgets/pay/payment_screen.dart';
 import 'package:shopify/widgets/product_details/details_screen.dart';
@@ -32,7 +36,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
         title: 'Shopify',
         getPages: [
-          GetPage(name: AllItemsScreen.routeName, page: () => AllItemsScreen()),
+          GetPage(name: HomeScreen.routeName, page: () => HomeScreen()),
           GetPage(name: CatItemsScreen.routeName, page: () => CatItemsScreen()),
           GetPage(name: CartScreen.routeName, page: () => CartScreen()),
           GetPage(name: DetailsScreen.routeName, page: () => DetailsScreen()),
@@ -42,6 +46,11 @@ class MyApp extends StatelessWidget {
           GetPage(name: PayMentScreen.routeName, page: () => PayMentScreen()),
           GetPage(
               name: PutAddressScreen.routeName, page: () => PutAddressScreen()),
+          GetPage(
+              name: OrderDetailsScreen.routeName,
+              page: () => OrderDetailsScreen()),
+          GetPage(
+              name: FavouritesScreen.routeName, page: () => FavouritesScreen()),
         ],
         theme: theme(),
         home: HomeWidget());
@@ -84,7 +93,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           if (Get.find<AuthController>().isLoggedIn()) {
             notificationListenInForground();
 
-            return AllItemsScreen();
+            return HomeScreen();
           } else if (box.hasData(FIRST_TIME_OPEN) &&
               box.read(FIRST_TIME_OPEN)) {
             // go to on boarding screen

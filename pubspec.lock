@@ -134,6 +134,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  favorites:
+    dependency: "direct main"
+    description:
+      path: favorites
+      relative: true
+    source: path
+    version: "0.0.1"
   ffi:
     dependency: transitive
     description:
@@ -314,6 +321,13 @@ packages:
     dependency: "direct main"
     description:
       path: models
+      relative: true
+    source: path
+    version: "0.0.1"
+  orders:
+    dependency: "direct main"
+    description:
+      path: orders
       relative: true
     source: path
     version: "0.0.1"

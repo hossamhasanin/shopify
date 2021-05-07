@@ -104,7 +104,8 @@ class PayController extends GetxController {
         carts: viewstate.value!.carts,
         address: viewstate.value!.curAddress.toString(),
         totalPrice: viewstate.value!.totalPrice,
-        numAllItems: viewstate.value!.numAllItems);
+        numAllItems: viewstate.value!.numAllItems,
+        orderState: OrderStates.Ordered.index);
 
     viewstate.value!.orderEventState.value =
         viewstate.value!.orderEventState.value!.copy(loading: true);

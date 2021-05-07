@@ -63,6 +63,10 @@ dependencies:
     path: cart 
   pay:
     path: pay   
+  orders:
+    path: orders
+  favorites:
+    path: favorites  
 
 
 dev_dependencies:

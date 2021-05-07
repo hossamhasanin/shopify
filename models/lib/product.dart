@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
+import 'package:models/models.dart';
 part 'product.g.dart';
 
 @HiveType(typeId: 1)
@@ -79,5 +80,30 @@ class Product extends Equatable {
       "description": description,
       "catId": catId
     };
+  }
+
+  Product copy({
+    String? id,
+    String? title,
+    String? description,
+    List? images,
+    List<int>? colors,
+    double? rating,
+    double? price,
+    bool? isFavourite,
+    bool? isPopular,
+    String? catId,
+  }) {
+    return Product(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        images: images ?? this.images,
+        colors: colors ?? this.colors,
+        rating: rating ?? this.rating,
+        price: price ?? this.price,
+        isFavourite: isFavourite ?? this.isFavourite,
+        isPopular: isPopular ?? this.isPopular,
+        catId: catId ?? this.catId);
   }
 }

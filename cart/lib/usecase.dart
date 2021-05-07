@@ -69,7 +69,7 @@ class CartUseCase {
   }
 
   double calculatePrice(Code? code, double totalPrice, List<Cart> carts) {
-    double price = totalPrice;
+    double price = 0.0;
 
     if (code != null) {
       if (code.cats.isNotEmpty) {
@@ -87,7 +87,6 @@ class CartUseCase {
           price = totalPrice - (price * code.discountPercent);
         }
       } else if (code.products.isNotEmpty) {
-        price = 0.0;
         carts.forEach((cart) {
           if (code.products.contains(cart.product.id)) {
             var oldPrice = cart.product.price * cart.numOfItem;

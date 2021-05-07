@@ -2,10 +2,12 @@ import 'package:all_items/all_items.dart';
 import 'package:cart/datasource.dart';
 import 'package:cat_items/datasource.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:favorites/datasource.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:models/models.dart';
 import 'package:models/notification.dart' as N;
+import 'package:orders/datasource.dart';
 import 'package:pay/datasource.dart';
 
 import 'package:shopify/constants.dart';
@@ -21,7 +23,9 @@ class FirebaseDataSource
         AppBarDatasource,
         ProductDetailsDataSource,
         CartDataSource,
-        PayDatasource {
+        PayDatasource,
+        OrdersDatasource,
+        FavoritesDataSource {
   FirebaseFirestore _firestore;
   FirebaseAuth _auth;
   FirebaseDataSource(
@@ -51,9 +55,20 @@ class FirebaseDataSource
         .limit(POPULAR_ITEMS_LIMIT)
         .get();
     if (itemsQuery.size > 0) {
-      List<Product> items = itemsQuery.docs
-          .map((snapshot) => Product.fromDocument(snapshot.data()!))
-          .toList();
+      List<Product> items = itemsQuery.docs.map((snapshot) {
+        var product = Product.fromDocument(snapshot.data()!);
+
+        List? likedBy = snapshot.data()!["likedBy"];
+
+        product = product.copy(
+            isFavourite: likedBy == null
+                ? false
+                : likedBy.contains(_auth.currentUser!.uid));
+
+        debugPrint("liked " + product.isFavourite.toString());
+
+        return product;
+      }).toList();
       print("koko ${items.length}");
       return items;
     } else {
@@ -91,7 +106,7 @@ class FirebaseDataSource
 
   @override
   Future<List<Product>> getItems(String catId, String lastId) async {
-    var itemsQuery;
+    QuerySnapshot itemsQuery;
     if (catId.isEmpty) {
       itemsQuery = await _firestore
           .collection(PRODUCTS_COLLECTION)
@@ -100,6 +115,8 @@ class FirebaseDataSource
           .limit(ITEMS_LIMIT)
           .get();
     } else {
+      debugPrint("from datasource catId " + catId);
+
       itemsQuery = lastId.isEmpty
           ? await _firestore
               .collection(PRODUCTS_COLLECTION)
@@ -114,10 +131,19 @@ class FirebaseDataSource
               .limit(ITEMS_LIMIT)
               .startAfter([lastId]).get();
     }
-    if (itemsQuery.size > 0) {
-      List<Product> items = itemsQuery.docs
-          .map((snapshot) => Product.fromDocument(snapshot.data()!))
-          .toList();
+
+    if (itemsQuery.docs.length > 0) {
+      List<Product> items = itemsQuery.docs.map((snapshot) {
+        var product = Product.fromDocument(snapshot.data()!);
+
+        List? likedBy = snapshot.data()!["likedBy"];
+
+        product = product.copy(
+            isFavourite: likedBy == null
+                ? false
+                : likedBy.contains(_auth.currentUser!.uid));
+        return product;
+      }).toList();
       debugPrint("num items " + items.length.toString());
       return items;
     } else {
@@ -245,6 +271,7 @@ class FirebaseDataSource
           order.copy(orderNum: id, payMethod: order.payMethod.split(".")[1]);
       var map = _order.tomap();
       map["created_at"] = FieldValue.serverTimestamp();
+      map["userId"] = _auth.currentUser!.uid;
       transaction.set(query.doc(id), map);
       for (Cart cart in order.carts!) {
         var map = cart.product.tomap();
@@ -327,5 +354,109 @@ class FirebaseDataSource
     } else {
       return Future.value(null);
     }
+  }
+
+  @override
+  Future cancelOrder(Order order) async {
+    var query = _firestore.collection(ORDER_COLLECTION).doc(order.orderNum);
+
+    var map = order.tomap();
+    map["orderState"] = OrderStates.Cancelled.index;
+    map["cancelledAt"] = FieldValue.serverTimestamp();
+    return query.update(map);
+  }
+
+  @override
+  Future<List<Cart>> getOrderdItems(String orderId) async {
+    var query = await _firestore
+        .collection(ORDER_COLLECTION)
+        .doc(orderId)
+        .collection(CART_COLLECTION)
+        .get();
+
+    debugPrint("carts docs " + query.docs.length.toString());
+    var carts = query.docs.map((cart) {
+      Product product = Product.fromDocument(cart.data()!);
+      var carts = Cart(
+          product: product,
+          numOfItem: cart.data()!["numOfItem"],
+          selectedColor: cart.data()!["selectedColor"]);
+      return carts;
+    }).toList();
+    return carts;
+  }
+
+  @override
+  Future<List<Order>> getOrders(String lastOrder) async {
+    QuerySnapshot ordersQuery = lastOrder.isEmpty
+        ? await _firestore
+            .collection(ORDER_COLLECTION)
+            .where("userId", isEqualTo: _auth.currentUser!.uid)
+            .orderBy("id")
+            .limit(ITEMS_LIMIT)
+            .get()
+        : await _firestore
+            .collection(ORDER_COLLECTION)
+            .where("userId", isEqualTo: _auth.currentUser!.uid)
+            .orderBy("id")
+            .limit(ITEMS_LIMIT)
+            .startAfter([lastOrder]).get();
+
+    DateTime _now = DateTime.now();
+
+    if (ordersQuery.docs.length > 0) {
+      List<Order> orders = [];
+      ordersQuery.docs.forEach((snapshot) {
+        var order = Order.fromDocument(snapshot.data()!);
+        if (order.cancelledAt != null) {
+          var diffrence = order.cancelledAt!.difference(_now).inDays;
+          if (diffrence <= 2) {
+            orders.add(order);
+          }
+        } else {
+          orders.add(order);
+        }
+      });
+      debugPrint("num orders " + orders.length.toString());
+      return orders;
+    } else {
+      return List.empty();
+    }
+  }
+
+  @override
+  Future<List<Product>> getFavoriteProducts(String lastId) async {
+    var query = lastId.isEmpty
+        ? _firestore
+            .collection(PRODUCTS_COLLECTION)
+            .where("likedBy", arrayContains: _auth.currentUser!.uid)
+            .orderBy("id")
+            .limit(ITEMS_LIMIT)
+        : _firestore
+            .collection(PRODUCTS_COLLECTION)
+            .where("likedBy", arrayContains: _auth.currentUser!.uid)
+            .orderBy("id")
+            .limit(ITEMS_LIMIT)
+            .startAfter([lastId]);
+
+    var items = (await query.get()).docs.map((doc) {
+      var product = Product.fromDocument(doc.data()!);
+
+      product = product.copy(isFavourite: true);
+
+      return product;
+    }).toList();
+    return items;
+  }
+
+  @override
+  Future toggelFavorite(Product product, bool state) async {
+    var query = _firestore.collection(PRODUCTS_COLLECTION).doc(product.id);
+
+    return query.update({
+      "likedBy": state
+          ? FieldValue.arrayUnion([_auth.currentUser!.uid])
+          : FieldValue.arrayRemove([_auth.currentUser!.uid])
+    });
   }
 }

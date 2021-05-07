@@ -44,15 +44,26 @@ class CustomBottomNavBar extends StatelessWidget {
                       : inActiveIconColor,
                 ),
                 onPressed: () =>
-                    Navigator.pushNamed(context, AllItemsScreen.routeName),
+                    MenuStateHolder.stateHolder.value = MenuState.home,
               ),
               IconButton(
                 icon: SvgPicture.asset("assets/icons/Heart Icon.svg"),
-                onPressed: () {},
+                color: MenuState.favourite == selectedMenu
+                    ? kPrimaryColor
+                    : inActiveIconColor,
+                onPressed: () {
+                  MenuStateHolder.stateHolder.value = MenuState.favourite;
+                },
               ),
               IconButton(
-                icon: SvgPicture.asset("assets/icons/Chat bubble Icon.svg"),
-                onPressed: () {},
+                icon: SvgPicture.asset("assets/icons/orders.svg"),
+                color: MenuState.orders == selectedMenu
+                    ? kPrimaryColor
+                    : inActiveIconColor,
+                onPressed: () {
+                  debugPrint("koko go to orders");
+                  MenuStateHolder.stateHolder.value = MenuState.orders;
+                },
               ),
               IconButton(
                 icon: SvgPicture.asset(
@@ -61,9 +72,8 @@ class CustomBottomNavBar extends StatelessWidget {
                       ? kPrimaryColor
                       : inActiveIconColor,
                 ),
-                // onPressed: () =>
-                //     Navigator.pushNamed(context, ProfileScreen.routeName),
-                onPressed: () {},
+                onPressed: () =>
+                    MenuStateHolder.stateHolder.value = MenuState.profile,
               ),
             ],
           )),

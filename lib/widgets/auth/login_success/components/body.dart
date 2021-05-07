@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopify/widgets/all_items/AllItemsScreen.dart';
+import 'package:shopify/widgets/home/home_screen.dart';
 import 'package:shopify/widgets/utils/components/default_button.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
 
@@ -29,7 +30,7 @@ class Body extends StatelessWidget {
           child: DefaultButton(
             text: "Back to home",
             press: () {
-              Get.toNamed(AllItemsScreen.routeName);
+              Get.toNamed(HomeScreen.routeName);
             },
           ),
         ),

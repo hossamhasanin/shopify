@@ -47,6 +47,7 @@ const String CART_COLLECTION = "cart";
 const String ADRESS_COLLECTION = "address";
 const String ORDER_COLLECTION = "order";
 const String CODES_COLLECTION = "codes";
+// const String FAVORITES_COLLECTION = "favorites";
 
 const int ITEMS_LIMIT = 30;
-const int POPULAR_ITEMS_LIMIT = 5;
+const int POPULAR_ITEMS_LIMIT = 6;

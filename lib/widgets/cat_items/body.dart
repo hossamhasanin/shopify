@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_getx_widget.dart';
 import 'package:models/models.dart';
 import 'package:shopify/constants.dart';
+import 'package:shopify/datasources/database/CashDatabase.dart';
+import 'package:shopify/datasources/database/FirebaseDataSource.dart';
 import 'package:shopify/widgets/app_bar/app_bar.dart';
 import 'package:shopify/widgets/cat_items/list_of_items.dart';
 import 'package:shopify/widgets/utils/helpers.dart';
@@ -24,7 +26,10 @@ class _BodyState extends State<Body> {
     // TODO: implement initState
     super.initState();
     catId = widget.cat == null ? "" : widget.cat!.id;
-    _controller = Get.find();
+    debugPrint("catId " + catId);
+    _controller = Get.put(CatItemsController(
+        cashDatasource: Get.find<CashDatabase>(),
+        networkDatasource: Get.find<FirebaseDataSource>()))!;
     if (_controller.viewstate.value!.items.length == 0)
       _controller.getItems(catId);
     debugPrint("init cat items");
