@@ -2,4 +2,4 @@
 
 Single vindor shopping app 
 
-<video src="/videos/shopify_video.mp4"/>
+<img src="/videos/show.gif"/>
