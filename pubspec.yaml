@@ -37,14 +37,15 @@ dependencies:
   awesome_dialog: ^2.0.0-nullsafety.0
   firebase_core: ^1.0.1
   firebase_auth: ^1.0.1
+  firebase_storage: ^8.0.5
   cloud_firestore: ^1.0.1
   #change_app_package_name:
   hive: ^2.0.0
   hive_flutter: ^1.0.0
   firebase_messaging: ^9.0.1
   # flutter_local_notifications: ^5.0.0
-  flutter_fawry_pay: ^0.0.2
   timelines: ^0.1.0
+  image_picker: ^0.7.4
 
 
   authentication_x:

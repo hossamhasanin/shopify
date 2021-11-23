@@ -4,12 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shopify/constants.dart';
 import 'package:models/User.dart' as U;
 
-class FirebaseAuthDatasource extends AuthDataSource<U.User> {
+class FirebaseAuthDatasource extends AuthDataSource {
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<void> login(String email, String password) {
+  Future login(String email, String password) {
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
@@ -45,11 +45,16 @@ class FirebaseAuthDatasource extends AuthDataSource<U.User> {
     return _auth.currentUser!.delete();
   }
 
-  Stream<U.User> get userData => _auth.userChanges().map((event) => U.User(
-      username: event!.displayName!,
-      email: event.email!,
-      id: event.uid,
-      gender: null));
+  Stream<U.User> get userData => _firestore
+      .collection(USERS_COLLECTION)
+      .doc(_auth.currentUser!.uid)
+      .snapshots()
+      .map((snapshot) => U.User(
+          username: snapshot.data()!["name"],
+          email: snapshot.data()!["email"],
+          id: snapshot.data()!["id"],
+          gender: snapshot.data()!["gender"],
+          image: snapshot.data()!["image"]));
   @override
   bool isLogedIn() {
     return _auth.currentUser != null;
@@ -58,5 +63,16 @@ class FirebaseAuthDatasource extends AuthDataSource<U.User> {
   @override
   Future<void> logOut() {
     return _auth.signOut();
+  }
+
+  @override
+  Future<void> updateUserProfile(U.User user) async {
+    return await _auth.currentUser!
+        .updateProfile(displayName: user.username, photoURL: user.image);
+  }
+
+  @override
+  Future<void> updateUserEmail(String newEmail) async {
+    return await _auth.currentUser!.verifyBeforeUpdateEmail(newEmail);
   }
 }

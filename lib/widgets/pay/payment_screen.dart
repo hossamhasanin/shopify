@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_fawry_pay/flutter_fawry_pay.dart';
 import 'package:get/get.dart';
 import 'package:models/models.dart';
 import 'package:shopify/datasources/database/FirebaseDataSource.dart';

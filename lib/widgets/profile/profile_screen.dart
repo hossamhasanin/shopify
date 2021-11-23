@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopify/widgets/profile/components/body.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -8,6 +9,7 @@ class ProfileScreen extends StatelessWidget {
         title: Text("Profile"),
         centerTitle: true,
       ),
+      body: Body(),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:models/cart.dart';
 
 class Order extends Equatable {
-  List<Cart>? carts;
+  final List<Cart>? carts;
   final String officialName;
   final String address;
   final String phone;
@@ -12,7 +12,7 @@ class Order extends Equatable {
   final double totalPrice;
   final int numAllItems;
   final int orderState;
-  DateTime? cancelledAt;
+  final DateTime? cancelledAt;
 
   Order(
       {required this.officialName,
@@ -50,7 +50,9 @@ class Order extends Equatable {
         totalPrice: map["totalPrice"],
         numAllItems: map["numAllItems"],
         orderState: map["orderState"],
-        cancelledAt: (map["cancelledAt"] as Timestamp).toDate());
+        cancelledAt: map["cancelledAt"] == null
+            ? null
+            : (map["cancelledAt"] as Timestamp).toDate());
   }
 
   Map<String, dynamic> tomap() {

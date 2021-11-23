@@ -10,8 +10,8 @@ class Code extends Equatable {
   final List<String> cats;
   final double discountPercent;
   final double discountAmount;
-  DateTime? startsIn;
-  DateTime? endsIn;
+  final DateTime? startsIn;
+  final DateTime? endsIn;
 
   Code(
       {required this.id,

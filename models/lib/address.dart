@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:models/models.dart';
 
 class Address extends Equatable {
   final String id;

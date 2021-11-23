@@ -392,17 +392,20 @@ class FirebaseDataSource
         ? await _firestore
             .collection(ORDER_COLLECTION)
             .where("userId", isEqualTo: _auth.currentUser!.uid)
-            .orderBy("id")
+            .orderBy("orderNum")
             .limit(ITEMS_LIMIT)
             .get()
         : await _firestore
             .collection(ORDER_COLLECTION)
             .where("userId", isEqualTo: _auth.currentUser!.uid)
-            .orderBy("id")
+            .orderBy("orderNum")
             .limit(ITEMS_LIMIT)
             .startAfter([lastOrder]).get();
 
     DateTime _now = DateTime.now();
+
+    debugPrint("num orders " + ordersQuery.docs.length.toString());
+    debugPrint("num orders " + _auth.currentUser!.uid);
 
     if (ordersQuery.docs.length > 0) {
       List<Order> orders = [];
